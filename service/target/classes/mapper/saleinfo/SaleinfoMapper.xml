@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.service.mapper.SaleinfoMapper">
+    
+    <resultMap type="Saleinfo" id="SaleinfoResult">
+        <result property="saleinfoId"    column="saleinfo_id"    />
+        <result property="parentId"     column="parent_id"     />
+        <result property="saleinfoCustomerName"    column="saleinfo_customer_name"    />
+        <result property="saleinfoQuantiy"    column="saleinfo_quantiy"    />
+        <result property="saleinfoStatus"    column="saleinfo_status"    />
+        <result property="saleinfoPrice"    column="saleinfo_price"    />
+        <result property="saleinfoTotalPrice"    column="saleinfo_total_price"    />
+        <result property="saleinfoCreatetime"    column="saleinfo_createtime"    />
+    </resultMap>
+
+    <resultMap type="SaleinfoDto" id="SaleinfoDtoResult">
+        <result property="goodsId"  column="goods_id" />
+        <result property="goodsName"  column="goods_name"/>
+        <result property="goodsNum"  column="goods_num"/>
+        <result property="saleinfoId"    column="saleinfo_id"    />
+        <result property="parentId"     column="parent_id"     />
+        <result property="saleinfoCustomerName"    column="saleinfo_customer_name"    />
+        <result property="saleinfoQuantiy"    column="saleinfo_quantiy"    />
+        <result property="saleinfoStatus"    column="saleinfo_status"    />
+        <result property="saleinfoPrice"    column="saleinfo_price"    />
+        <result property="saleinfoTotalPrice"    column="saleinfo_total_price"    />
+        <result property="saleinfoCreatetime"    column="saleinfo_createtime"    />
+    </resultMap>
+
+    <sql id="selectSaleinfoVo">
+        select saleinfo_id,parent_id, saleinfo_customer_name, saleinfo_quantiy, saleinfo_status, saleinfo_price, saleinfo_total_price, saleinfo_createtime from saleinfo
+    </sql>
+
+    <select id="selectSaleinfoList" parameterType="SaleinfoDto" resultMap="SaleinfoDtoResult">
+        SELECT g.goods_id, g.goods_name,g.goods_num, s.saleinfo_id,s.parent_id, s.saleinfo_customer_name, s.saleinfo_quantiy, s.saleinfo_status, s.saleinfo_price, s.saleinfo_total_price, s.saleinfo_createtime
+        FROM `goods` g LEFT JOIN `saleinfo` s
+        ON g.`goods_id` = s.`parent_id`
+        WHERE `parent_id` = `goods_id`
+    </select>
+    
+    <select id="selectSaleinfoBySaleinfoId" parameterType="Long" resultMap="SaleinfoResult">
+        <include refid="selectSaleinfoVo"/>
+        where saleinfo_id = #{saleinfoId}
+    </select>
+        
+    <insert id="insertSaleinfo" parameterType="Saleinfo" useGeneratedKeys="true" keyProperty="saleinfoId">
+        insert into saleinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="saleinfoCustomerName != null">saleinfo_customer_name,</if>
+            <if test="saleinfoQuantiy != null">saleinfo_quantiy,</if>
+            <if test="saleinfoStatus != null">saleinfo_status,</if>
+            <if test="saleinfoPrice != null">saleinfo_price,</if>
+            <if test="saleinfoTotalPrice != null">saleinfo_total_price,</if>
+            <if test="saleinfoCreatetime != null">saleinfo_createtime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="saleinfoCustomerName != null">#{saleinfoCustomerName},</if>
+            <if test="saleinfoQuantiy != null">#{saleinfoQuantiy},</if>
+            <if test="saleinfoStatus != null">#{saleinfoStatus},</if>
+            <if test="saleinfoPrice != null">#{saleinfoPrice},</if>
+            <if test="saleinfoTotalPrice != null">#{saleinfoTotalPrice},</if>
+            <if test="saleinfoCreatetime != null">#{saleinfoCreatetime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleinfo" parameterType="Saleinfo">
+        update saleinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="saleinfoCustomerName != null">saleinfo_customer_name = #{saleinfoCustomerName},</if>
+            <if test="saleinfoQuantiy != null">saleinfo_quantiy = #{saleinfoQuantiy},</if>
+            <if test="saleinfoStatus != null">saleinfo_status = #{saleinfoStatus},</if>
+            <if test="saleinfoPrice != null">saleinfo_price = #{saleinfoPrice},</if>
+            <if test="saleinfoTotalPrice != null">saleinfo_total_price = #{saleinfoTotalPrice},</if>
+            <if test="saleinfoCreatetime != null">saleinfo_createtime = #{saleinfoCreatetime},</if>
+        </trim>
+        where saleinfo_id = #{saleinfoId}
+    </update>
+
+    <delete id="deleteSaleinfoBySaleinfoId" parameterType="Long">
+        delete from saleinfo where saleinfo_id = #{saleinfoId}
+    </delete>
+
+    <delete id="deleteSaleinfoBySaleinfoIds" parameterType="String">
+        delete from saleinfo where saleinfo_id in 
+        <foreach item="saleinfoId" collection="array" open="(" separator="," close=")">
+            #{saleinfoId}
+        </foreach>
+    </delete>
+</mapper>

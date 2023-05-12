@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.service.mapper.CustomerMapper">
+    
+    <resultMap type="Customer" id="CustomerResult">
+        <result property="customerId"    column="customer_id"    />
+        <result property="customerAddress"    column="customer_address"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerNumber"    column="customer_number"    />
+        <result property="customerRemarks"    column="customer_remarks"    />
+    </resultMap>
+
+    <sql id="selectCustomerVo">
+        select customer_id, customer_address, customer_name, customer_number, customer_remarks from customer
+    </sql>
+
+    <select id="selectCustomerList" parameterType="Customer" resultMap="CustomerResult">
+        <include refid="selectCustomerVo"/>
+        <where>  
+            <if test="customerAddress != null  and customerAddress != ''"> and customer_address like concat('%', #{customerAddress}, '%')</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="customerNumber != null  and customerNumber != ''"> and customer_number = #{customerNumber}</if>
+            <if test="customerRemarks != null  and customerRemarks != ''"> and customer_remarks = #{customerRemarks}</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerByCustomerId" parameterType="Long" resultMap="CustomerResult">
+        <include refid="selectCustomerVo"/>
+        where customer_id = #{customerId}
+    </select>
+        
+    <insert id="insertCustomer" parameterType="Customer">
+        insert into customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="customerAddress != null">customer_address,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="customerNumber != null">customer_number,</if>
+            <if test="customerRemarks != null">customer_remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="customerAddress != null">#{customerAddress},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="customerNumber != null">#{customerNumber},</if>
+            <if test="customerRemarks != null">#{customerRemarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomer" parameterType="Customer">
+        update customer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerAddress != null">customer_address = #{customerAddress},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="customerNumber != null">customer_number = #{customerNumber},</if>
+            <if test="customerRemarks != null">customer_remarks = #{customerRemarks},</if>
+        </trim>
+        where customer_id = #{customerId}
+    </update>
+
+    <delete id="deleteCustomerByCustomerId" parameterType="Long">
+        delete from customer where customer_id = #{customerId}
+    </delete>
+
+    <delete id="deleteCustomerByCustomerIds" parameterType="String">
+        delete from customer where customer_id in 
+        <foreach item="customerId" collection="array" open="(" separator="," close=")">
+            #{customerId}
+        </foreach>
+    </delete>
+</mapper>

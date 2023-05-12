@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.service.mapper.GoodsMapper">
+    
+    <resultMap type="Goods" id="GoodsResult">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="goodsImg"    column="goods_img"    />
+        <result property="goodsContact"    column="goods_contact"    />
+        <result property="goodsUnits"    column="goods_units"    />
+        <result property="goodsNum"    column="goods_num"    />
+        <result property="goodsPrice"    column="goods_price"    />
+        <result property="goodsTotalPrice"    column="goods_total_price"    />
+        <result property="dosage"    column="dosage"    />
+        <result property="crops"    column="crops"    />
+        <result property="ills"    column="ills"    />
+        <result property="goodsCreatetime"    column="goods_createtime"    />
+    </resultMap>
+    <resultMap type="Goods" id="GoodsName">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+    </resultMap>
+    <sql id="selectGoodsVo">
+        select goods_id, goods_name, goods_type, goods_img, goods_contact, goods_units, goods_num, goods_price, goods_total_price, dosage, crops, ills, goods_createtime from goods
+    </sql>
+    <select id="selectGoodsList" parameterType="Goods" resultMap="GoodsResult">
+        <include refid="selectGoodsVo"/>
+        <where>  
+            <if test="goodsName != null  and goodsName != ''"> and goods_name = #{goodsName}</if>
+            <if test="goodsType != null  and goodsType != ''"> and goods_type = #{goodsType}</if>
+            <if test="goodsContact != null  and goodsContact != ''"> and goods_contact = #{goodsContact}</if>
+            <if test="goodsCreatetime != null "> and goods_createtime = #{goodsCreatetime}</if>
+        </where>
+    </select>
+    <select id="selectGoodsNameList" parameterType="Goods" resultMap="GoodsName">
+        SELECT goods_id, goods_name FROM goods
+    </select>
+    <select id="selectGoodsByGoodsId" parameterType="String" resultMap="GoodsResult">
+        <include refid="selectGoodsVo"/>
+        where goods_id = #{goodsId}
+    </select>
+    <insert id="insertGoods" parameterType="Goods">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null and goodsName != ''">goods_name,</if>
+            <if test="goodsType != null">goods_type,</if>
+            <if test="goodsImg != null">goods_img,</if>
+            <if test="goodsContact != null">goods_contact,</if>
+            <if test="goodsUnits != null and goodsUnits != ''">goods_units,</if>
+            <if test="goodsNum != null">goods_num,</if>
+            <if test="goodsPrice != null">goods_price,</if>
+            <if test="goodsTotalPrice != null">goods_total_price,</if>
+            <if test="dosage != null">dosage,</if>
+            <if test="crops != null">crops,</if>
+            <if test="ills != null">ills,</if>
+            <if test="goodsCreatetime != null">goods_createtime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null and goodsName != ''">#{goodsName},</if>
+            <if test="goodsType != null">#{goodsType},</if>
+            <if test="goodsImg != null">#{goodsImg},</if>
+            <if test="goodsContact != null">#{goodsContact},</if>
+            <if test="goodsUnits != null and goodsUnits != ''">#{goodsUnits},</if>
+            <if test="goodsNum != null">#{goodsNum},</if>
+            <if test="goodsPrice != null">#{goodsPrice},</if>
+            <if test="goodsTotalPrice != null">#{goodsTotalPrice},</if>
+            <if test="dosage != null">#{dosage},</if>
+            <if test="crops != null">#{crops},</if>
+            <if test="ills != null">#{ills},</if>
+            <if test="goodsCreatetime != null">#{goodsCreatetime},</if>
+         </trim>
+    </insert>
+    <update id="updateGoods" parameterType="Goods">
+        update goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsName != null and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="goodsType != null">goods_type = #{goodsType},</if>
+            <if test="goodsImg != null">goods_img = #{goodsImg},</if>
+            <if test="goodsContact != null">goods_contact = #{goodsContact},</if>
+            <if test="goodsUnits != null and goodsUnits != ''">goods_units = #{goodsUnits},</if>
+            <if test="goodsNum != null">goods_num = #{goodsNum},</if>
+            <if test="goodsPrice != null">goods_price = #{goodsPrice},</if>
+            <if test="goodsTotalPrice != null">goods_total_price = #{goodsTotalPrice},</if>
+            <if test="dosage != null">dosage = #{dosage},</if>
+            <if test="crops != null">crops = #{crops},</if>
+            <if test="ills != null">ills = #{ills},</if>
+            <if test="goodsCreatetime != null">goods_createtime = #{goodsCreatetime},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+    <delete id="deleteGoodsByGoodsId" parameterType="String">
+        delete from goods where goods_id = #{goodsId}
+    </delete>
+    <delete id="deleteGoodsByGoodsIds" parameterType="String">
+        delete from goods where goods_id in 
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+</mapper>
